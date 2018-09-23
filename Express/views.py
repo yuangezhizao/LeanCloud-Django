@@ -41,7 +41,6 @@ def login(request):
         return redirect('/express')
     if request.method == 'POST':
         login_form = forms.UserForm(request.POST)
-        print(login_form)
         message = '所有的字段都必须填写！'
         if login_form.is_valid():
             username = login_form.cleaned_data.get('username')
@@ -130,7 +129,6 @@ def user_confirm(request):
     try:
         confirm = models.ConfirmString.objects.get(code=code)
     except Exception as e:
-        print(e)
         message = '无效的请求！'
         return render(request, 'Express/confirm.html', locals())
 
