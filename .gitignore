@@ -90,3 +90,7 @@ ENV/
 
 # LeanCloud settings
 .leancloud/
+.avoscloud/
+
+# Pycharm
+.idea/*
