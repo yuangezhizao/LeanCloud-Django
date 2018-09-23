@@ -1,0 +1,62 @@
+{% extends 'Express/base.html' %}
+
+
+{% block title %}我的发单{% endblock %}
+
+
+{% block head %}
+
+    <style>
+        .ui.segment {
+            max-width: 650px !important;
+            line-height: 1.5;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+{% endblock %}
+
+
+{% block content %}
+    <div class="ui unstackable steps">
+        <div class="step">
+            <i class="users icon"></i>
+            <div class="content">
+                <div class="title">我的</div>
+                <div class="description"></div>
+            </div>
+        </div>
+        <div class="completed active step">
+            <i class="truck icon"></i>
+            <div class="content">
+                <div class="title">发单</div>
+                <div class="description">{{ express_all.count }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="ui very relaxed list">
+        {% for express in express_all %}
+            <div class="item">
+                <div class="content">
+                    <!--
+      <a class="header" href="/express/detail/{{ express.pk }}">{{ express.publish_user.all }}</a>
+      -->
+                    <a class="header" href="{% url 'Express:detail' express.pk %}">
+                        {% for publish_user in express.publish_user.all %}
+                            {{ publish_user }}
+                        {% endfor %}
+
+                    </a>
+
+                    <div class="description">
+                        快递公司：{{ express.express_company }}<br>
+                        快递详情：{{ express.detail }}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+
+{% endblock %}
+

@@ -1,0 +1,33 @@
+{% extends 'Express/base.html' %}
+
+
+{% block title %}接单 - 确认{% endblock %}
+
+
+{% block head %}
+
+    <style>
+        .ui.segment {
+            max-width: 650px !important;
+            line-height: 1.5;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+{% endblock %}
+
+
+{% block content %}
+    <div class="ui tall stacked segment">
+        {% if control == 0 %}
+            <div class="ui blue message">确认完成任务成功！</div>
+            <script>
+                //window.location.href = '../';
+                setTimeout("javascript:location.href='./'", 1000);
+            </script>
+        {% else %}
+            <div class="ui red message">非法访问</div>
+        {% endif %}
+    </div>
+{% endblock %}
+

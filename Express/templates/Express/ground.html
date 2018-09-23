@@ -1,0 +1,49 @@
+{% extends 'Express/base.html' %}
+
+
+{% block title %}同村传递 - 我要取{% endblock %}
+
+{% block head %}
+
+    <style>
+
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="ui very relaxed list">
+        {% for express in express_all %}
+            <div class="item">
+                <div class="content">
+                    <!--
+      <a class="header" href="/express/detail/{{ express.pk }}">{{ express.publish_user.all }}</a>
+      -->
+                    <a class="header" href="{% url 'Express:detail' express.pk %}">
+                        {% for publish_user in express.publish_user.all %}
+                            发单人：{{ publish_user }}
+                        {% endfor %}</a>
+
+                    <div class="description">
+                        快递公司：{{ express.express_company }}<br>
+                        快递详情：{{ express.detail }}<br>
+                        {% if express.hurry_cost == 0.0 %}
+                            不加急<br>
+                        {% else %}
+                            加急费用：{{ express.hurry_cost }}元<br>
+                        {% endif %}
+                        代取费用：{{ express.total_cost }}元
+                    </div>
+
+                    {% for receive_user in express.receive_user.all %}
+                        {% if receive_user %}
+                            接单人：{{ receive_user }}
+                        {% else %}
+                            暂无人接单
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}

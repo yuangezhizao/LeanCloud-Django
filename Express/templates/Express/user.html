@@ -1,0 +1,65 @@
+{% extends 'Express/base.html' %}
+
+
+{% block title %}用户信息{% endblock %}
+
+
+{% block head %}
+
+    <style>
+        .ui.segment {
+            max-width: 650px !important;
+            line-height: 1.5;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+{% endblock %}
+
+
+{% block content %}
+    <div class="ui tall stacked segment">
+        <div class="ui divided items">
+            <div class="item">
+
+                <div class="content">
+                    <h3>用户信息</h3>
+                    <div class="ui divided selection list">
+                        <div class="ui attached red segment">
+                            <div class="ui red horizontal label">用户名</div>
+                            {{ user.name }}
+                        </div>
+                        <div class="ui attached blue segment">
+                            <div class="ui blue horizontal label">性别</div>
+                            {% if user.sex == 'male' %}
+                                男性
+                            {% elif user.sex == 'famale' %}
+                                女性
+                            {% endif %}
+                        </div>
+                        <div class="ui attached green segment">
+                            <div class="ui green horizontal label">邮箱认证</div>
+                            {% if user.has_confirmed %}
+                                邮箱认证成功
+                            {% else %}
+                                尚未邮箱认证
+                            {% endif %}
+                        </div>
+                        <div class="ui attached yellow segment">
+                            <div class="ui yellow horizontal label">信誉度</div>
+                            {{ user.credit }}<br>
+                            <span>信誉度详细计算请参考你的发单和接单中的评分</span><br>
+                            <a class="ui large purple submit button" href="{% url 'Express:my_receive' %}">我的接单</a>
+
+                            <a class="ui large pink submit button" href="{% url 'Express:my_publish' %}">我的发单</a>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

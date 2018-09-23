@@ -1,0 +1,79 @@
+{% extends 'Express/base.html' %}
+
+
+{% block title %}同村传递{% endblock %}
+
+
+{% block head %}
+    <style>
+        .ui.segment {
+            max-width: 650px !important;
+            line-height: 1.5;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+
+{% endblock %}
+
+
+{% block content %}
+    <div class="ui dividing blue header">
+        <div class="content">
+            <h2>同村传递</h2>
+        </div>
+    </div>
+
+    <div class="ui raised segment">
+        <div class="card">
+            <div class="content">
+                <div class="header">同村传递</div>
+                <div class="meta">Pass with the village</div>
+                <div class="description">你帮我，我帮你</div>
+            </div>
+            <div class="extra content">
+                {% if request.session.is_login %}
+                    <div class="ui positive message">
+                        <i class="close icon"></i>
+                        <div class="header">欢迎
+                        </div>
+                        {{ request.session.user_name }}<a class="item" href="{% url 'Express:logout' %}"><i
+                            class="logout icon"></i>注销</a>
+                    </div>
+                    <a class="ui large blue submit button" href="{% url 'Express:my' %}">个人信息</a>
+                    <a class="ui large purple submit button" href="{% url 'Express:my_receive' %}">我的接单</a>
+
+                    <a class="ui large pink submit button" href="{% url 'Express:my_publish' %}">我的发单</a>
+
+                {% else %}
+                    <div class="ui two buttons">
+                        <a id="register" href="{% url 'Express:register' %}" class="ui green button">注册</a>
+                        <div class="or"></div>
+                        <a id="login" href="{% url 'Express:login' %}" class="ui blue button">登录</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+
+{% block script %}
+    <script>
+
+        $(function () {
+            $("#register").click(function () {
+                $(this).addClass("loading");
+                addClass(gEle("login"), "disabled");
+            });
+        });
+        $(function () {
+            $("#login").click(function () {
+                $(this).addClass("loading");
+                addClass(gEle("register"), "disabled");
+            });
+        });
+    </script>
+{% endblock %}
+

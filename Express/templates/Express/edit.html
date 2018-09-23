@@ -1,0 +1,269 @@
+{% extends 'Express/base.html' %}
+
+
+{% block title %}同村传递 - 帮我取{% endblock %}
+
+
+{% block head %}
+
+    <style>
+
+    </style>
+{% endblock %}
+
+{% block content %}
+
+    <form id="a" name="a" class="ui form" action="" onsubmit="return validate_form(this)" method="POST">
+        {% if message %}
+            <div class="ui negative message">{{ message }}</div>
+        {% endif %}
+        {% csrf_token %}
+        <div class="field">
+            <label>快递单号</label>
+            <input type="number" name="express_number" placeholder="请输入快递单号">
+        </div>
+        <div class="field">
+            <label>快递公司</label>
+            <input type="text" name="express_company" placeholder="请输入快递公司">
+        </div>
+
+        <div class="field">
+            <label>收货地址</label>
+            <input type="text" name="address" placeholder="请输入收货地址">
+        </div>
+
+
+        <div class="field">
+            <label>是否超重</label>
+            <input class="radio_height" type="radio" name="express_height" value="0" oninput="total()"
+                   checked="checked">普通小件（2.5 元）
+            <input class="radio_height" type="radio" name="express_height" value="1" oninput="total()">普通大件（5 元）
+            <input class="radio_height" type="radio" name="express_height" value="2" oninput="total()">超重件（5 元 + 自定义费用）
+        </div>
+
+        <div id="height_input" class="field" style="display: none;">
+            <label>超重费用</label>
+            <span id="show_height_cost"></span><br>
+            <input type="range" min="0.0" max="30.0" value="0.0" oninput="change_height_cost()" id="height_cost"
+                   name="height_cost" placeholder="自定义超重费用">
+        </div>
+
+
+        <div class="field">
+            <label>是否加急</label>
+            <input class="radio_hurry" type="radio" name="express_hurry" value="0" oninput="total()" checked="checked">不加急（免费）
+            <input class="radio_hurry" type="radio" name="express_hurry" value="1" oninput="total()">加急（自定义费用）
+        </div>
+
+        <div id="hurry_input" class="field" style="display: none;">
+            <label>加急费用</label>
+            <span id="show_hurry_cost"></span><br>
+            <input type="range" min="0.0" max="30.0" value="0" oninput="change_hurry_cost()" id="hurry_cost"
+                   name="hurry_cost" placeholder="自定义加急">
+        </div>
+
+
+        <div class="field">
+            <label>期望收货时间</label>
+            <input readonly="readonly" id="latest_time" type="datetime-local" name="latest_time"
+                   min="2018-05-13T18:00:00" max="2020-12-31T18:00:00" placeholder="请选择期望收货时间">
+        </div>
+        <div class="field">
+            <label>联系方式</label>
+            <input type="text" name="contact" value="{{ exist_user.phone }}" placeholder="请输入联系方式">
+        </div>
+        <div class="field">
+            <label>小费</label>
+            <span id="show_tip_cost"></span><br>
+            <input type="range" min="0.0" max="10.0" value="0" oninput="change_tip_cost()" id="tip_cost" name="tip_cost"
+                   placeholder="自定义小费">
+
+        </div>
+        <div class="field">
+            <label>详细信息</label>
+            <textarea class="" rows="2" type="text" name="detail" placeholder="请输入详细信息"></textarea>
+        </div>
+
+        <div class="field">
+            <label>总价</label>
+            <span id="total_cost" name="total_cost"></span><br>
+        </div>
+
+
+        <button id="edit" class="ui positive button" type="submit" onsubmit="">确认提交</button>
+    </form>
+
+{% endblock %}
+
+{% block script %}
+    <script>
+        //change_height_cost();
+        change_hurry_cost();
+        change_tip_cost();
+        total();
+        $(".radio_height").change(
+            function () {
+                total();
+                express_height = $("input[name='express_height']:checked").val();
+                if (express_height == 2) {
+                    gEle("height_input").style.display = "";//显示
+                }
+                else {
+                    gEle("height_input").style.display = "none";//隐藏
+                }
+            }
+        );
+
+        $(".radio_hurry").change(
+            function () {
+                total();
+                express_hurry = $("input[name='express_hurry']:checked").val();
+                if (express_hurry == 1) {
+                    gEle("hurry_input").style.display = "";//显示
+                    gEle("latest_time").readOnly = false;
+                }
+                else if (express_hurry == 0) {
+                    gEle("hurry_input").style.display = "none";//隐藏
+                    gEle("latest_time").readOnly = true;
+                    gEle("latest_time").value = getFormat();
+                }
+            }
+        );
+
+        $(function () {
+            $("#edit").click(function () {
+                $(this).addClass("loading");
+                //addClass(gEle("login"), "disabled");
+            });
+        });
+
+        function getFormat() {
+            format = "";
+            var nTime = new Date();
+            format += nTime.getFullYear() + "-";
+            format += (nTime.getMonth() + 1) < 10 ? "0" + (nTime.getMonth() + 1) : (nTime.getMonth() + 1);
+            format += "-";
+            format += nTime.getDate() < 10 ? "0" + (nTime.getDate()) : (nTime.getDate());
+            format += "T";
+            format += 18;//nTime.getHours() < 10 ? "0" + (nTime.getHours()) : (nTime.getHours());
+            format += ":";
+            format += "00";//nTime.getMinutes() < 10 ? "0" + (nTime.getMinutes()) : (nTime.getMinutes());
+            format += ":00";
+            return format;
+        }
+
+        function validate_form(thisform) {
+            with (thisform) {
+                //alert(thisform.totalcost.value);
+                /*
+                if (validate_required(username,"username must be filled out!")==false)
+                {username.focus();return false}
+                else if (validate_required(password,"password must be filled out!")==false)
+                {password.focus();return false}
+                else{
+                */
+                //var divEle = document.getElementById("a");
+                //divEle.className = "ui loading form";
+                //return false;
+                //  }
+            }
+        }
+
+        $(function () {
+
+            gEle("latest_time").value = getFormat();//赋初始值
+
+        });
+
+
+        function add(a, b) {
+            var c, d, e;
+            try {
+                c = a.toString().split(".")[1].length;
+            } catch (f) {
+                c = 0;
+            }
+            try {
+                d = b.toString().split(".")[1].length;
+            } catch (f) {
+                d = 0;
+            }
+            return e = Math.pow(10, Math.max(c, d)), (mul(a, e) + mul(b, e)) / e;
+        }
+
+        function sub(a, b) {
+            var c, d, e;
+            try {
+                c = a.toString().split(".")[1].length;
+            } catch (f) {
+                c = 0;
+            }
+            try {
+                d = b.toString().split(".")[1].length;
+            } catch (f) {
+                d = 0;
+            }
+            return e = Math.pow(10, Math.max(c, d)), (mul(a, e) - mul(b, e)) / e;
+        }
+
+        function mul(a, b) {
+            var c = 0,
+                d = a.toString(),
+                e = b.toString();
+            try {
+                c += d.split(".")[1].length;
+            } catch (f) {
+            }
+            try {
+                c += e.split(".")[1].length;
+            } catch (f) {
+            }
+            return Number(d.replace(".", "")) * Number(e.replace(".", "")) / Math.pow(10, c);
+        }
+
+        function div(a, b) {
+            var c, d, e = 0,
+                f = 0;
+            try {
+                e = a.toString().split(".")[1].length;
+            } catch (g) {
+            }
+            try {
+                f = b.toString().split(".")[1].length;
+            } catch (g) {
+            }
+            return c = Number(a.toString().replace(".", "")), d = Number(b.toString().replace(".", "")), mul(c / d, Math.pow(10, f - e));
+        }
+
+
+        function change_height_cost() {
+            gEle("show_height_cost").textContent = gEle("height_cost").value + '元';
+            total();
+        }
+
+        function change_hurry_cost() {
+            gEle("show_hurry_cost").textContent = gEle("hurry_cost").value + '元';
+            total();
+        }
+
+        function change_tip_cost() {
+            gEle("show_tip_cost").textContent = gEle("tip_cost").value + '元';
+            total();
+        }
+
+        function total() {
+            var total = 0.0;
+            hurry_cost = gEle("hurry_cost").value;
+            tip_cost = gEle("tip_cost").value;
+            express_height = $("input[name='express_height']:checked").val();
+            if (express_height == 2) {
+                height_cost = gEle("height_cost").value;
+                total = parseFloat(hurry_cost) + parseFloat(tip_cost) + 2.5 + (express_height - 1) * 2.5 + parseFloat(height_cost);
+            }
+            else {
+                total = parseFloat(hurry_cost) + parseFloat(tip_cost) + 2.5 + express_height * 2.5;
+            }
+            gEle("total_cost").textContent = total + '元';
+        }
+    </script>
+{% endblock %}

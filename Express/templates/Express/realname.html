@@ -1,0 +1,92 @@
+{% extends 'Express/base.html' %}
+
+
+{% block title %}实名认证{% endblock %}
+
+
+{% block head %}
+
+    <style>
+        .ui.segment {
+            max-width: 650px !important;
+            line-height: 1.5;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+{% endblock %}
+
+
+{% block content %}
+    <div class="ui tall stacked segment">
+        {% if control == 1 %}
+            <h3>你已经实名认证成功！</h3>
+            <script>
+                //window.location.href = '../';
+                setTimeout("javascript:location.href='./'", 1000);
+            </script>
+
+        {% elif control == -1 %}
+            <h3>受国家政策法律要求，请先完成实名认证</h3>
+            <div>
+                <b>注意事项</b><br>
+                1.每个证件只能绑定一个账号<br>
+                2.证件照不清晰或与输入的信息不匹配,将导致实名认证被驳回<br>
+                3.您提供的证件信息将受到严格保护,仅用于身份验证,未经本人许可不会用于其他用途<br>
+                <b>证件要求</b><br>
+                1.需上传本人露脸手持二代身份证背面照＋身份证正反面照片（不需手持）<br>
+                2.证件必须在有效期内，有效期需在一个月以上<br>
+                <b>照片要求</b><br>
+                1.本人手持证件正面露脸，五官清晰可辨<br>
+                2.证件照上信息需完整且清晰可辨（无反光、遮挡、水印、证件套、logo等）<br>
+                3.申请人填写的“真实姓名”和“证件号码”需和提交证件照片信息一致<br>
+                4.证件必须真实拍摄，不能使用复印件<br>
+                5.确保照片完整（不缺边角），证件周围不允许加上边角框（如：加上红框等）<br>
+            </div>
+            <form id="a" class="ui large form" action="" method="POST">
+
+                {% if message %}
+                    <div class="ui negative message">{{ message }}</div>
+                {% endif %}
+
+                {% csrf_token %}
+                <div class="ui stacked segment">
+                    <div class="field">
+                        <label>姓名</label>
+                        <div class="ui left icon input">
+
+                            <input class="ui input" type="text" name="username" id="email" placeholder="请输入姓名"
+                                   autofocus>
+                            <i class="user icon"></i>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>身份证号码</label>
+                        <div class="ui left icon input">
+
+                            <input class="ui input" type="text" name="id" id="id"
+                                   placeholder="身份证号码">
+                            <i class="lock icon"></i>
+                        </div>
+                    </div>
+                    <div class="">
+                        <input id="f" type="file" name="file">
+                        上传手持证件照 （2M以内）
+                        <input id="f" type="file" name="file">
+                        上传证件正面照 （2M以内）
+                        <input id="f" type="file" name="file">
+                        上传证件背面照 （2M以内）
+                    </div>
+                    <input class="ui fluid large green submit button" type="submit" name="submit" value="提交">
+                </div>
+            </form>
+        {% elif control == 0 %}
+            <h3>请等待实名认证结果！</h3>
+            <script>
+                //window.location.href = '../';
+                setTimeout('javascript:location.href="{% url 'Express:edit' %}"', 1000);
+            </script>
+        {% endif %}
+    </div>
+{% endblock %}
+

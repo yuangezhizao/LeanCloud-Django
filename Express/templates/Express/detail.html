@@ -1,0 +1,143 @@
+{% extends 'Express/base.html' %}
+
+
+{% block title %}详情{% endblock %}
+
+
+{% block head %}
+
+    <style>
+        .ui.segment {
+            max-width: 650px !important;
+            line-height: 1.5;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+{% endblock %}
+
+
+{% block content %}
+    <div class="ui tall stacked segment">
+        <div class="ui divided items">
+            <div class="item">
+                <div class="content">
+                    <a class="ui orange ribbon label">{{ express.pk }}</a>
+                    <div class="ui divided selection list">
+                        <div class="ui attached red segment">
+                            <div class="ui red horizontal label">快递单号</div>
+                            {{ express.express_number }}
+                        </div>
+                        <div class="ui attached blue segment">
+                            <div class="ui blue horizontal label">快递公司</div>
+                            {{ express.express_company }}
+                        </div>
+                        <div class="ui attached green segment">
+                            <div class="ui green horizontal label">发布时间</div>
+                            {{ express.pub_date }}
+                        </div>
+                        <div class="ui attached yellow segment">
+                            <div class="ui yellow horizontal label">快递大小</div>
+                            {% if express.express_height == 0 %}
+                                普通小件
+                            {% endif %}
+                            {% if express.express_height == 1 %}
+                                普通大件
+                            {% endif %}
+                            {% if express.express_height == 2 %}
+                                超重件，加费{{ express.height_cost }}
+                            {% endif %}
+                        </div>
+                        <div class="ui attached teal segment">
+                            {% if express.hurry_cost == 0.0 %}
+                                <div class="ui teal horizontal label">不加急</div>
+                            {% else %}
+                                <div class="ui teal horizontal label">加急费用</div>
+                                {{ express.hurry_cost }}
+                            {% endif %}
+                        </div>
+                        <div class="ui attached pink segment">
+                            <div class="ui pink horizontal label">收货地址</div>
+                            {{ express.address }}
+                        </div>
+                        <!--
+                        <div class="ui attached brown segment">
+                            <div class="ui brown horizontal label">期望收货时间</div>
+                            {{ express.latest_time }}
+                        </div>
+                        -->
+                        <div class="ui attached orange segment">
+                            <div class="ui orange horizontal label">联系方式</div>
+                            {{ express.contact }}
+                        </div>
+                        <div class="ui attached olive segment">
+                            <div class="ui olive horizontal label">小费</div>
+                            {{ express.tip_cost }}元
+                        </div>
+                        <div class="ui attached black segment">
+                            <div class="ui black horizontal label">总价</div>
+                            {{ express.total_cost }}元
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% if express.status == 'publish' %}
+                {% for publish_user in express.publish_user.all %}
+                    {% if publish_user == my_user %}
+                        <div class="ui red message">你不能接自己的发单</div>
+                    {% else %}
+                        <a class="ui large green submit button" href="receive">可以接单</a>
+                    {% endif %}
+                {% endfor %}
+
+            {% elif express.status == 'receive' %}
+                {% for receive_user in express.receive_user.all %}
+                    {% if receive_user == my_user %}
+                        <div class="ui blue message">它的发单已被你接单</div>
+                        <a class="ui large purple submit button" href="finish">完成任务后请点此</a>
+                    {% else %}
+                        <div class="ui red message">已被他人接单</div>
+                    {% endif %}
+                {% endfor %}
+
+                {% for publish_user in express.publish_user.all %}
+                    {% if publish_user == my_user %}
+                        <div class="ui blue message">你的发单已被接单</div>
+                    {% endif %}
+                {% endfor %}
+
+            {% elif express.status == 'finish' %}
+                <div class="ui green message">该订单已经完成</div>
+                {% for receive_user in express.receive_user.all %}
+                    {% if receive_user == my_user %}
+                        {% if express.publish_user_rate < 0 %}
+                            <a class="ui large purple submit button" href="rate-publish">对发单者评分</a>
+                        {% else %}
+                            <div class="ui orange message">你已对发单者评{{ express.publish_user_rate }}分</div>
+                            {% if express.receive_user_rate != -1 %}
+                                <div class="ui orange message">你已对被接单者评{{ express.receive_user_rate }}分</div>
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+
+                {% for publish_user in express.publish_user.all %}
+                    {% if publish_user == my_user %}
+                        {% if express.receive_user_rate < 0 %}
+                            <a class="ui large purple submit button" href="rate-receive">对接单者评分</a>
+                        {% else %}
+                            <div class="ui orange message">你已对接单者评{{ express.receive_user_rate }}分</div>
+                            {% if express.publish_user_rate != -1 %}
+                                <div class="ui orange message">你已对被接单者评{{ express.publish_user_rate }}分</div>
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <div class="ui red message">未知</div>
+            {% endif %}
+        </div>
+    </div>
+
+
+{% endblock %}

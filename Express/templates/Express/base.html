@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!--    <meta name="google-site-verification" content="r60E4sFJHchDyFugnQqJuemmhx_13jgS6sVejKN2ZU0" />-->
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+    <meta name="keywords" content="同村传递, yuangezhizao">
+    <meta name="description" content="同村传递，远哥制造">
+    <meta name="author" content="yuangezhizao"/>
+    <meta name="Copyright" content="Copyright yuangezhizao All Rights Reserved."/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/semantic-ui/2.2.14/semantic.min.css">
+    <link rel="dns-prefetch" href="//www.yuangezhizao.cn">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <!--, user-scalable=0"-->
+    <!--<style>[v-cloak]{display:none;}</style>-->
+    {% block head %}{% endblock %}
+</head>
+<body>
+
+<div class="ui centered grid">
+    <div class="sixteen wide mobile ten wide tablet ten wide computer column">
+
+
+        <div class="ui blue pointing menu">
+            <!--
+            TODO: fixed
+            -->
+            {% block nav %}
+                <a class="item" href="{% url 'Express:index' %}"><i class="home icon"></i>首页</a>
+                <a class="item" href="{% url 'Express:edit' %}"><i class="comment icon"></i>帮我取</a>
+                <a class="item" href="{% url 'Express:ground' %}"><i class="bell icon"></i>我要取</a>
+            {% endblock %}
+            <div class="right menu">
+                {% if request.session.is_login %}
+                    <a class="item" href="{% url 'Express:logout' %}"><i class="sign out icon"></i>注销</a>
+                {% else %}
+                    <a class="up item" href="{% url 'Express:login' %}"><i class="sign in icon"></i>登录</a>
+                {% endif %}
+            </div>
+
+        </div>
+
+        {% block content %}{% endblock %}<br>
+        <footer>
+            <center>
+                <h5>
+                    <div id="footer_message" style="">
+                        同村传递&nbsp&nbsp&nbsp&nbsp©&nbsp&nbsp&nbsp&nbsp2018&nbsp&nbsp&nbsp&nbsp<a
+                            href="https://www.yuangezhizoa.cn">yuangezhizao</a></div>
+                </h5>
+            </center>
+
+        </footer>
+    </div>
+</div>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/semantic-ui/2.2.14/semantic.min.js"></script>
+<script>
+    $('.ui.checkbox').checkbox();
+    $('.ui.accordion').accordion();// ﾉ♥
+    $('.ui.dropdown').dropdown();
+    $('.menu .item').tab();
+    $('.message .close').on('click', function () {
+        $(this).closest('.message').transition('fade');
+    });
+    $('.ui.rating')
+        .rating({
+            initialRating: 3,
+            maxRating: 5
+        })
+    ;
+    {% comment %}{% endcomment %}
+
+
+    function show_date_time() {
+        window.setTimeout("show_date_time()", 1000);
+        BirthDay = new Date("04/20/2018 20:00:00");
+        today = new Date();
+        timeold = (today.getTime() - BirthDay.getTime());
+        sectimeold = timeold / 1000;
+        secondsold = Math.floor(sectimeold);
+        msPerDay = 24 * 60 * 60 * 1000;
+        e_daysold = timeold / msPerDay;
+        daysold = Math.floor(e_daysold);
+        e_hrsold = (e_daysold - daysold) * 24;
+        hrsold = Math.floor(e_hrsold);
+        e_minsold = (e_hrsold - hrsold) * 60;
+        minsold = Math.floor((e_hrsold - hrsold) * 60);
+        seconds = Math.floor((e_minsold - minsold) * 60);
+        since.innerHTML = daysold + " 天 " + hrsold + " 小时 " + minsold + " 分 " + seconds + " 秒";
+    }
+
+    //show_date_time();
+
+    function gEle(a) {
+        return document.getElementById(a)
+    }
+
+    window.getjson = function (t, e, n) {
+        var i = new XMLHttpRequest;
+        return i.onreadystatechange = function () {
+            4 == i.readyState && (200 == i.status ? e(JSON.parse(i.response), n) : e({
+                code: -502,
+                message: "网络错误"
+            }, n))
+        }
+            ,
+            i.open("GET", t, !0),
+            i.withCredentials = !0,
+            i.send(),
+            i
+    };
+
+    //&& "{" == i.response.substr(0, 1) && "}" == i.response.substr(-1, 1)
+
+    function addClass(obj, cname) {
+        //对象,class名
+        var oClass = obj.className;
+        if ((oClass == "") || (oClass == " ")) {
+            obj.className = cname;
+        } else {
+            var delClass = oClass.split(" ");
+            var flag = 0;
+            for (var i = 0; i < delClass.length; i++) {
+                if (delClass[i] == cname) flag = 1;
+            }
+            if (flag == 0) obj.className = oClass + " " + cname;
+        }
+    };
+
+    //删除class
+    function removeClass(obj, cname) {
+        //对象,class名
+        var oClass = obj.className;
+        if ((oClass == "") || (oClass == " ")) {
+            obj.className = "";
+        } else {
+            var delClass = oClass.split(" ");
+            var flag = 0;
+            var delet = 0;
+            for (var i = 0; i < delClass.length; i++) {
+                if (delClass[i] == cname) {
+                    flag = 1;
+                    delet = i;
+                }
+            }
+            var newClass = "";
+            if (flag == 1) {
+                for (var j = 0; j < delet; j++)
+                    newClass += (delClass[j] + " ");
+                for (var k = (delet + 1); k < delClass.length; k++)
+                    newClass += (delClass[k] + " ");
+                obj.className = newClass;
+            }
+        }
+    };
+</script>
+{% block script %}{% endblock %}
+
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-83264206-14"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'UA-83264206-14');
+
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?bd5ff0d5d923f5587ff9e2c737d9478f";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+</body>
+</html>

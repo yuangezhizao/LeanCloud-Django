@@ -1,11 +1,9 @@
-# coding: utf-8
-
 from gevent import monkey
 monkey.patch_all()
 
 import os
 # 设置 Django 项目配置文件
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "APP.settings")
 
 import leancloud
 from gevent.pywsgi import WSGIServer

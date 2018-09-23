@@ -1,0 +1,38 @@
+{% extends 'Express/base.html' %}
+
+
+{% block title %}接单详情{% endblock %}
+
+
+{% block head %}
+
+    <style>
+        .ui.segment {
+            max-width: 650px !important;
+            line-height: 1.5;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+{% endblock %}
+
+
+{% block content %}
+    <div class="ui tall stacked segment">
+        {% if control == 0 %}
+            <div class="ui blue message">{{ exist_express.receive_user.all }}</div>
+            {% if exist_express.receive_user.all.count == 1 %}
+                <div class="ui blue message">接单成功！</div>
+                <script>
+                    //window.location.href = '../';
+                    setTimeout("javascript:location.href='./'", 1000);
+                </script>
+            {% else %}
+                <div class="ui red message">接单失败！</div>
+            {% endif %}
+        {% else %}
+            <div class="ui red message">非法访问</div>
+        {% endif %}
+    </div>
+{% endblock %}
+

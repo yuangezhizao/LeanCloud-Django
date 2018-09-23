@@ -1,0 +1,178 @@
+{% extends 'Express/base.html' %}
+
+
+{% block title %}同村传递 - 注册{% endblock %}
+
+
+{% block head %}
+
+    <style>
+        body {
+            background-color: #ffffff;
+        }
+
+        body > .grid {
+            height: 80%;
+        }
+
+        .image {
+            margin-top: -100px;
+        }
+
+        #column {
+            text-align: center;
+            margin-left: auto;
+            margin-right: auto;
+            max-width: 450px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div id="column">
+        <h2 class="ui blue image header">
+            <div class="content">
+                注册
+            </div>
+        </h2>
+        <form id="a" class="ui large form" action="" method="POST">
+
+            {% if message %}
+                <div class="ui negative message">{{ message }}</div>
+            {% endif %}
+
+            <h2 class="text-center">欢迎注册</h2>
+
+            {% csrf_token %}
+            <div class="ui stacked segment">
+
+                <div class="field">
+                    {{ register_form.username.label_tag }}
+                    <div class="ui left icon input">
+                        {{ register_form.username }}
+                        <i class="user icon"></i>
+                    </div>
+                </div>
+                <div class="field">
+                    {{ register_form.password1.label_tag }}
+                    <div class="ui left icon input">
+                        {{ register_form.password1 }}
+                        <i class="lock icon"></i>
+                    </div>
+                </div>
+                <div class="field">
+                    {{ register_form.password2.label_tag }}
+                    <div class="ui left icon input">
+                        {{ register_form.password2 }}
+                        <i class="lock icon"></i>
+                    </div>
+                </div>
+                <div class="field">
+                    {{ register_form.email.label_tag }}
+                    <div class="ui left icon input">
+                        {{ register_form.email }}
+                        <i class="icon mail"></i>
+                    </div>
+                </div>
+                <div class="field">
+                    {{ register_form.sex.label_tag }}
+                    <div class="ui left icon input">
+                        {{ register_form.sex }}
+                    </div>
+                </div>
+                <div class="field">
+                    {{ register_form.captcha.errors }}
+                    {{ register_form.captcha.label_tag }}
+                    <div class="ui left icon input">
+                        {{ register_form.captcha }}
+                    </div>
+                </div>
+
+
+                <div class="field">
+                    <div class="ui checkbox">
+                        <input type="checkbox" name="terms" tabindex="0" class="hidden">
+                        <label>我同意用户协议</label>
+                    </div>
+                </div>
+
+
+                <input class="ui large red submit button" type="reset" name="reset" value="清空">
+                <input class="ui large blue submit button" type="submit" name="submit" value="注册">
+
+
+            </div>
+        </form>
+
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li{% if message.tags %} class="ui {{ message.tags }} message"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <div class="ui warning message">
+                已有账号？<a href="{% url 'Express:login' %}">登录</a>
+            </div>
+        {% endif %}
+
+    </div>
+
+{% endblock %}
+
+{% block script %}
+    <script>
+        $('.ui.form')
+            .form({
+                fields: {
+                    terms: {
+                        identifier: 'terms',
+                        rules: [
+                            {
+                                type: 'checked',
+                                prompt: '你必须同意本站用户协议！'
+                            }
+                        ]
+                    }
+                }
+            })
+        ;
+        /*
+        $(document).ready(function () {
+            $('.ui.form').form({
+                fields: {
+                    email: {
+                        identifier: 'email',
+                        rules: [
+                            {
+                                type: 'empty',
+                                prompt: '未填写邮箱'
+                            },
+                            {
+                                type: 'email',
+                                prompt: '邮箱格式错误'
+                            }
+                        ]
+                    },
+                    password: {
+                        identifier: 'password',
+                        rules: [
+                            {
+                                type: 'empty',
+                                prompt: '未填写密码'
+                            },
+                            {
+                                type: 'length[6]',
+                                prompt: '你的密码长度小于 6 个字符'
+                            }
+                        ]
+                    }
+                },
+                onSuccess: function () {
+                    validate_form();
+                }
+            })
+        };
+        */
+    </script>
+{% endblock %}
